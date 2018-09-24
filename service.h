@@ -1,10 +1,10 @@
 #include <ESP8266WiFi.h>
 //#include "WiFiEsp.h"
 
-const char* WIFI_SSID     = "[your-ssid-goes-here]";
-const char* WIFI_PASSWORD = "[wifi-password-goes here]";
+const char* WIFI_SSID     = "NET_2GEF70EA";
+const char* WIFI_PASSWORD = "69EF70EA";
 
-byte ip_address[] = { 192, 168, 0, 155 }; // Enforced IP Address 
+byte ip_address[] = { 192, 168, 0, 156 }; // Enforced IP Address 
 byte gateway[] = { 192, 168,  0,   1 }; // Enforced Gateway 
 
 
@@ -27,23 +27,51 @@ class wifi_config
 
 void wifi_config::SetConfig()
 {
+    // check for the presence of the shield:
+    if (WiFi.status() == WL_NO_SHIELD) {
+        Serial.println("WiFi shield not present");
+        // don't continue:
+        return;
+    }
+    
+    Serial.println(_ssid);
+    Serial.write(_pwd);
+    
     if (!_static_config)
     {
+        Serial.write("\nBegining static configuration...");
         WiFi.begin(_ssid, _pwd);
     }
     else
     {
+        Serial.write("\nBegining dynamic configuration...");
         IPAddress ip(_ip_addr);
         IPAddress gateway(_default_gateway);
         IPAddress subnet(255, 255, 255, 0);
         WiFi.begin(_ssid, _pwd);
         WiFi.config(ip, gateway, subnet); 
     }
-
+    int fcounter = 0;
     Serial.write("\nWaiting for wi-fi connection...");
     while (WiFi.status() != WL_CONNECTED) { 
-        delay(100);
+
+        fcounter++;
+        delay(1000);
         Serial.write(".");
+        if (WiFi.status()==WL_CONNECT_FAILED) //||WiFi.status()==WL_CONNECTION_LOST
+        {
+            Serial.write("\nConnection Failed! Aborting!");
+            break;
+        }
+        else if (WiFi.status()==WL_CONNECTION_LOST) //||WiFi.status()==WL_CONNECTION_LOST
+        {
+            Serial.write("\nConnection Lost!");
+            break;
+        }
+        else if ( (fcounter % 10) == 0)
+        {
+            Serial.println(WiFi.status());
+        }
     }
     Serial.write("...ready:  IP ");
     Serial.println(get_ip());
