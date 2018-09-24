@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include "service.h"
 
+
 int ENA = D3; //4;
 int IN1 = D2; //0;
 int IN2 = D4; //2;
@@ -8,11 +9,13 @@ int IN2 = D4; //2;
 int IN3 = D5; //0;
 int IN4 = D6; //2;
 
+
 wifi_config *wifi;
 
 void setup() {
     Serial.begin(115200);
 
+    // ensure motors are turned off
     pinMode(IN1, OUTPUT);
     pinMode(IN2, OUTPUT);
     pinMode(IN3, OUTPUT);
@@ -29,5 +32,5 @@ void setup() {
 
 void loop() {
     // put your main code here, to run repeatedly:
-    http->
+    //http->
 }
